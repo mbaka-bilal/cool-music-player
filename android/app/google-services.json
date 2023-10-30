@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "27835784169",
+    "project_id": "my-projects-ed284",
+    "storage_bucket": "my-projects-ed284.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27835784169:android:0120b0e81b47f41c2a0978",
+        "android_client_info": {
+          "package_name": "com.gymnogene.cool_music_player"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb_2aBkJQ6BTyArAcxiOP3oqEV52Hr7J8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
