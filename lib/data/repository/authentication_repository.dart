@@ -7,7 +7,7 @@ import '../../utils/common.dart';
 import '../../utils/constants.dart';
 
 class AuthenticationRepository {
-  Future<NetworkResponse> signInWithPhoneNumber(String phoneNumber) async {
+  Future<NetworkResponse> signInWithPhoneNumber(String phoneNumber,{int? resendToken}) async {
     ///Request Otp
     return await networkRequestTryCatch(() async {
       final completer = Completer<NetworkResponse>();
@@ -49,6 +49,7 @@ class AuthenticationRepository {
           //     status: RequestStatus.failed, data: verificationId);
           // completer.complete(networkResponse);
         },
+        forceResendingToken: resendToken,
       )
           .timeout(const Duration(seconds: 30), onTimeout: () {
         networkResponse = const NetworkResponse(

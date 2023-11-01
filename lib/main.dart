@@ -22,7 +22,7 @@ void main() async {
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
         create: (context) =>
-            OnboardingBloc(onboardingRepository: AuthenticationRepository()))
+            AuthenticationBloc(onboardingRepository: AuthenticationRepository()))
   ], child: const MyApp()));
 }
 

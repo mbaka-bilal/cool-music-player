@@ -6,11 +6,12 @@ import '../../utils/common.dart';
 import 'authentication_state.dart';
 import 'authentication_event.dart';
 
-class OnboardingBloc extends Bloc<OnboardingEvent, AuthenticationState> {
-  OnboardingBloc({required this.onboardingRepository})
+class AuthenticationBloc extends Bloc<OnboardingEvent, AuthenticationState> {
+  AuthenticationBloc({required this.onboardingRepository})
       : super(const AuthenticationState()) {
     on<RequestOtp>(_mapRequestOtpEventToState);
     on<VerifyOtp>(_mapVerifyOtpEventToState);
+    on<ResendOtp>(_mapResendOtpEventToState);
   }
 
   final AuthenticationRepository onboardingRepository;
@@ -20,7 +21,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, AuthenticationState> {
     emit(state.copyWith(signInWithPhoneNumberStatus: RequestStatus.loading));
     final response =
         await onboardingRepository.signInWithPhoneNumber(event.phoneNumber);
-    
+
     if (response.status != RequestStatus.success) {
       final data = response.data;
       emit(state.copyWith(
@@ -52,5 +53,11 @@ class OnboardingBloc extends Bloc<OnboardingEvent, AuthenticationState> {
           verifySignInWithPhoneNumberStatus: response.status,
           userCredential: response.data));
     }
+  }
+
+  void _mapResendOtpEventToState(
+      ResendOtp event, Emitter<AuthenticationState> emit) async {
+    await onboardingRepository.signInWithPhoneNumber(event.phoneNumber,
+        resendToken: event.resendToken);
   }
 }

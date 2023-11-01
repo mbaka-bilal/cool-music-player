@@ -127,6 +127,7 @@ class _LoginState extends State<Login> {
                       ),
                       IconButton(
                           onPressed: () {
+                            // _enterOtpBottomSheet();
                             _enterPhoneNumberBottomSheet();
                           },
                           icon: const Icon(
@@ -179,7 +180,7 @@ class _LoginState extends State<Login> {
                 top: 20, bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: BlocConsumer<OnboardingBloc, AuthenticationState>(
+              child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
                 listener: (context, state) {
                   if (state.requestOtpStatus == RequestStatus.success) {
                     Navigator.pop(context);
@@ -217,7 +218,7 @@ class _LoginState extends State<Login> {
                                     return;
                                   }
 
-                                  context.read<OnboardingBloc>().add(RequestOtp(
+                                  context.read<AuthenticationBloc>().add(RequestOtp(
                                       phoneNumber:
                                           _phoneNumberController.text));
                                 })

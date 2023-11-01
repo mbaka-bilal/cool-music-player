@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +27,26 @@ class _OtpScreenState extends State<OtpScreen> {
   final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
   final List<TextEditingController> _textControllers =
       List.generate(6, (index) => TextEditingController());
+  Timer? _timer;
+  int resendCodeCounter = 60;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    resendCodeCounter = 60;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendCodeCounter == 0) {
+        timer.cancel();
+      } else {
+        resendCodeCounter--;
+      }
+      setState(() {});
+    });
+  }
 
   @override
   void dispose() {
@@ -33,6 +55,9 @@ class _OtpScreenState extends State<OtpScreen> {
     }
     for (TextEditingController c in _textControllers) {
       c.dispose();
+    }
+    if (_timer != null) {
+      _timer!.cancel();
     }
     super.dispose();
   }
@@ -86,7 +111,7 @@ class _OtpScreenState extends State<OtpScreen> {
             const SizedBox(
               height: 20,
             ),
-            BlocConsumer<OnboardingBloc, AuthenticationState>(
+            BlocConsumer<AuthenticationBloc, AuthenticationState>(
               listener: (context, state) {},
               builder: (context, state) => Column(
                 children: [
@@ -116,9 +141,10 @@ class _OtpScreenState extends State<OtpScreen> {
                               //         "AD8T5IvV5627TpZuNkGbOYndYF6uqgjjULCicjDNq1a0lbem-fEI1ld4vFcA4v_mbzVX0xh81J1E3lpvjGJfL6QtykMlWSX4z4jzPP9rpDYksPcQn11xFXOmIPCSy81SE49Q0yLSqlYBYz2ua4Sf7WgA5RQgo3onHQ"));
 
                               if (state.verificationId != null) {
-                                context.read<OnboardingBloc>().add(VerifyOtp(
-                                    code: number,
-                                    verificationId: state.verificationId!));
+                                context.read<AuthenticationBloc>().add(
+                                    VerifyOtp(
+                                        code: number,
+                                        verificationId: state.verificationId!));
                               } else {
                                 Fluttertoast.showToast(
                                     msg:
@@ -130,7 +156,21 @@ class _OtpScreenState extends State<OtpScreen> {
                         ),
                 ],
               ),
-            )
+            ),
+            const SizedBox(height: 30),
+            (resendCodeCounter == 0)
+                ? TextButton(
+                    onPressed: () {
+                      _startTimer();
+                      final provider = context.read<AuthenticationBloc>();
+                      provider.add(ResendOtp(
+                          phoneNumber: widget.phoneNumber,
+                          resendToken: provider.state.resendToken));
+                    },
+                    child: const Text(
+                      "Resend code",
+                    ))
+                : Text("Request a new code in 00:$resendCodeCounter")
           ],
         ),
       ),

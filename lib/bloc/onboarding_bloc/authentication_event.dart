@@ -16,3 +16,10 @@ class VerifyOtp extends OnboardingEvent {
   final String code;
   final String verificationId;
 }
+
+class ResendOtp extends OnboardingEvent {
+  const ResendOtp({required this.phoneNumber,required this.resendToken});
+
+  final int? resendToken;
+  final String phoneNumber;
+}
